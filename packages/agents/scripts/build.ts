@@ -17,7 +17,10 @@ async function main() {
       "src/observability/index.ts",
       "src/codemode/ai.ts",
       "src/experimental/forever.ts",
-      "src/experimental/memory/session/index.ts"
+      "src/experimental/memory/session/index.ts",
+      "src/browser/index.ts",
+      "src/browser/ai.ts",
+      "src/browser/tanstack-ai.ts"
     ],
     deps: {
       skipNodeModulesBundle: true,

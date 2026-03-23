@@ -1,5 +1,6 @@
 import { createWorkersAI } from "workers-ai-provider";
 import { routeAgentRequest, callable } from "agents";
+import { createBrowserTools } from "agents/browser/ai";
 import { AIChatAgent, type OnChatMessageOptions } from "@cloudflare/ai-chat";
 import {
   streamText,
@@ -56,6 +57,11 @@ export class ChatAgent extends AIChatAgent {
 
   async onChatMessage(_onFinish: unknown, options?: OnChatMessageOptions) {
     const mcpTools = this.mcp.getAITools();
+    const browserTools = createBrowserTools({
+      browser: this.env.BROWSER,
+      cdpUrl: this.env.CDP_BASE_URL || undefined,
+      loader: this.env.LOADER
+    });
     const workersai = createWorkersAI({ binding: this.env.AI });
 
     const result = streamText({
@@ -65,7 +71,8 @@ export class ChatAgent extends AIChatAgent {
       }),
       system:
         "You are a helpful assistant. You can check the weather, get the user's timezone, " +
-        "and run calculations. For calculations with large numbers (over 1000), you need user approval first.",
+        "run calculations, and use a browser to inspect web pages via Chrome DevTools Protocol. " +
+        "For calculations with large numbers (over 1000), you need user approval first.",
       // Prune old tool calls and reasoning to save tokens on long conversations
       messages: pruneMessages({
         messages: await convertToModelMessages(this.messages),
@@ -75,6 +82,9 @@ export class ChatAgent extends AIChatAgent {
       tools: {
         // MCP tools from connected servers
         ...mcpTools,
+
+        // Browser tools: search CDP spec + execute CDP commands
+        ...browserTools,
 
         // Server-side tool: executes automatically
         getWeather: tool({
@@ -135,7 +145,7 @@ export class ChatAgent extends AIChatAgent {
           }
         })
       },
-      stopWhen: stepCountIs(5)
+      stopWhen: stepCountIs(20)
     });
 
     return result.toUIMessageStreamResponse();
