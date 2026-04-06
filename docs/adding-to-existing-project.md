@@ -359,6 +359,10 @@ export default {
 
 ## Troubleshooting
 
+### `SyntaxError: Invalid or unexpected token`
+
+If you see this error when using `@callable()` with Vite 8+, you are missing the `agents/vite` plugin. See [Callable Methods - Vite Plugin](./callable-methods.md#vite-plugin-required) for details.
+
 ### "Agent not found" or 404 errors
 
 1. **Check the export** - Agent class must be exported from your main entry point

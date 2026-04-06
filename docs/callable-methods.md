@@ -51,6 +51,28 @@ console.log(result); // "Hello, World!"
 
 The `@callable()` decorator is specifically for WebSocket-based RPC from external clients. When calling from within the same Worker or another agent, use standard [Durable Object RPC](https://developers.cloudflare.com/durable-objects/best-practices/create-durable-object-stubs-and-send-requests/) directly.
 
+## Vite Plugin (Required)
+
+The `@callable()` decorator uses [TC39 standard decorators](https://github.com/tc39/proposal-decorators) (2023-11 proposal). Vite 8+ uses [OXC](https://oxc.rs/) for JavaScript transforms, and OXC does not yet support lowering TC39 decorators ([oxc#9170](https://github.com/oxc-project/oxc/issues/9170)). Without a transpilation step, your dev server will fail with a vague `SyntaxError: Invalid or unexpected token` error.
+
+The Agents SDK ships a Vite plugin that handles this automatically. Add it to your `vite.config.ts`:
+
+```typescript
+import agents from "agents/vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    agents(),      // Transpiles TC39 decorators for Vite 8+
+    cloudflare(),
+    // ... other plugins (react, tailwindcss, etc.)
+  ],
+});
+```
+
+The `agents()` plugin uses [`@rolldown/plugin-babel`](https://www.npmjs.com/package/@rolldown/plugin-babel) with [`@babel/plugin-proposal-decorators`](https://babeljs.io/docs/babel-plugin-proposal-decorators) under the hood. It only processes files that contain `@` (the decorator sigil), so the performance impact is minimal. It is safe to include even if your project does not use decorators.
+
 ## TypeScript Configuration
 
 The `@callable()` decorator requires TypeScript's decorator support. Set `"target"` to `"ES2021"` or later in your `tsconfig.json`:
