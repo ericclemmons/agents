@@ -27,7 +27,30 @@ npm install agents hono-agents
 
 ---
 
-## 2. Create an Agent
+## 2. Configure Vite (if using Vite)
+
+If your project uses Vite (v8+), add the `agents/vite` plugin to transpile TC39 decorators. Vite 8 uses OXC for JavaScript transforms, which does not support decorator syntax yet. Without this plugin, `@callable()` will cause a `SyntaxError: Invalid or unexpected token` at runtime.
+
+```typescript
+// vite.config.ts
+import agents from "agents/vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    agents(),      // Transpiles TC39 decorators
+    cloudflare(),
+    // ... your other plugins
+  ],
+});
+```
+
+If you are not using Vite, no additional build configuration is needed — `wrangler` handles decorator transpilation automatically.
+
+---
+
+## 3. Create an Agent
 
 Create a new file for your agent (e.g., `src/agents/counter.ts`):
 
@@ -55,7 +78,7 @@ export class Counter extends Agent<Env, CounterState> {
 
 ---
 
-## 3. Update wrangler.jsonc
+## 4. Update wrangler.jsonc
 
 Add the Durable Object binding and migration:
 
@@ -95,7 +118,7 @@ Add the Durable Object binding and migration:
 
 ---
 
-## 4. Export the Agent Class
+## 5. Export the Agent Class
 
 Your agent class must be exported from your main entry point. Update your `src/index.ts`:
 
@@ -111,7 +134,7 @@ export default {
 
 ---
 
-## 5. Wire Up Routing
+## 6. Wire Up Routing
 
 Choose the approach that matches your project structure:
 
@@ -188,7 +211,7 @@ Make sure your `wrangler.jsonc` has the assets binding:
 
 ---
 
-## 6. Add TypeScript Types
+## 7. Add TypeScript Types
 
 Update your `Env` type to include the agent namespace. Create or update `env.d.ts`:
 
@@ -207,7 +230,7 @@ interface Env {
 
 ---
 
-## 7. Connect from the Frontend
+## 8. Connect from the Frontend
 
 ### React
 
@@ -358,6 +381,10 @@ export default {
 ---
 
 ## Troubleshooting
+
+### `SyntaxError: Invalid or unexpected token`
+
+If you see this error when using `@callable()` with Vite 8+, you are missing the `agents/vite` plugin. See [Step 2](#2-configure-vite-if-using-vite) above.
 
 ### "Agent not found" or 404 errors
 

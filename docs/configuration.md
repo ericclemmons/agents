@@ -657,6 +657,23 @@ Use `deleted_classes`:
 
 ## Troubleshooting
 
+### `SyntaxError: Invalid or unexpected token` (Vite 8+)
+
+This error occurs when using `@callable()` decorators without the `agents/vite` plugin. Vite 8 uses OXC for JavaScript transforms, and OXC does not yet support TC39 decorators. Add the plugin to your `vite.config.ts`:
+
+```typescript
+import agents from "agents/vite";
+
+export default defineConfig({
+  plugins: [
+    agents(), // Transpiles TC39 decorators
+    // ... other plugins
+  ],
+});
+```
+
+See [Callable Methods - Vite Plugin](./callable-methods.md#vite-plugin-required) for more details and manual setup instructions.
+
 ### "No such Durable Object class"
 
 The class isn't in migrations:

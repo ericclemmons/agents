@@ -20,6 +20,7 @@ This creates a project with:
 
 - `src/server.ts` - Your agent code
 - `src/client.tsx` - React frontend
+- `vite.config.ts` - Vite configuration (includes the `agents/vite` plugin for decorator support)
 - `wrangler.jsonc` - Cloudflare configuration
 
 Start the dev server:
@@ -251,6 +252,23 @@ Check that:
 1. You're calling `this.setState()`, not mutating `this.state` directly
 2. Your agent has `initialState` defined (state is only sent on connect if the agent has state)
 3. WebSocket connection is established (check browser dev tools)
+
+### `SyntaxError: Invalid or unexpected token`
+
+If your dev server fails with this error when using `@callable()`, you are missing the `agents/vite` plugin. Vite 8+ uses OXC for JavaScript transforms, which does not support TC39 decorators yet. Add the plugin to your `vite.config.ts`:
+
+```typescript
+import agents from "agents/vite";
+
+export default defineConfig({
+  plugins: [
+    agents(), // Transpiles TC39 decorators
+    // ... other plugins
+  ],
+});
+```
+
+See [Callable Methods - Vite Plugin](./callable-methods.md#vite-plugin-required) for details.
 
 ### "Method X is not callable" errors
 
