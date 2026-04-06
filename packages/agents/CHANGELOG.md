@@ -1,5 +1,30 @@
 # @cloudflare/agents
 
+## 0.10.0
+
+### Minor Changes
+
+- [#1256](https://github.com/cloudflare/agents/pull/1256) [`dfab937`](https://github.com/cloudflare/agents/commit/dfab937c81b358415e66bda3f8abe76b85d12c11) Thanks [@threepointone](https://github.com/threepointone)! - Add durable fiber execution to the Agent base class.
+
+  `runFiber(name, fn)` registers work in SQLite, holds a `keepAlive` ref, and enables recovery via `onFiberRecovered` after DO eviction. `ctx.stash()` and `this.stash()` checkpoint progress that survives eviction.
+
+  `AIChatAgent` gains `unstable_chatRecovery` — when enabled, each chat turn is wrapped in a fiber. `onChatRecovery` provides provider-specific recovery (Workers AI continuation, OpenAI response retrieval, Anthropic synthetic message). `continueLastTurn()` appends to the interrupted assistant message seamlessly.
+
+  `Think` now extends `Agent` directly (no mixin). Fiber support is inherited from the base class.
+
+  **Breaking (experimental APIs only):**
+
+  - Removed `withFibers` mixin (`agents/experimental/forever`)
+  - Removed `withDurableChat` mixin (`@cloudflare/ai-chat/experimental/forever`)
+  - Removed `./experimental/forever` export from both packages
+  - Think no longer has a `fibers` flag — recovery is automatic via alarm housekeeping
+
+### Patch Changes
+
+- [#1259](https://github.com/cloudflare/agents/pull/1259) [`1933eb4`](https://github.com/cloudflare/agents/commit/1933eb44c48bcb2abf92ef6510359baba138fdca) Thanks [@threepointone](https://github.com/threepointone)! - Run fiber recovery eagerly in `onStart()` instead of deferring to the next alarm. Interrupted fibers are now detected immediately on the first request after DO wake, with the alarm path as a fallback. A re-entrancy guard prevents double recovery.
+
+- [#1267](https://github.com/cloudflare/agents/pull/1267) [`d1ee61a`](https://github.com/cloudflare/agents/commit/d1ee61af77e05625128d1d48fd5316621849fb87) Thanks [@dmmulroy](https://github.com/dmmulroy)! - Fix MCP streamable HTTP client session lifecycle so closing connections explicitly terminates active sessions and persists session IDs across reconnects/restores.
+
 ## 0.9.0
 
 ### Minor Changes
