@@ -3,7 +3,7 @@ import { Logo } from "./logo";
 import { useMotionValueEvent, useScroll, motion } from "framer-motion";
 import clsx from "clsx";
 import { Balancer } from "react-wrap-balancer";
-import { AGENTS_DOCS_HREF, DASHBOARD_HREF } from "./links";
+import { AGENTS_DOCS_GET_STARTED_HREF } from "./links";
 
 function Copy() {
   const [copied, setCopied] = useState(false);
@@ -73,38 +73,21 @@ export function Header() {
         <div className="flex ml-auto gap-8 items-center">
           <Copy />
           {showLinks && (
-            <>
-              <motion.a
-                transition={{
-                  type: "spring",
-                  stiffness: 800,
-                  damping: 80,
-                  mass: 4
-                }}
-                animate={{ x: 0, opacity: 1 }}
-                initial={{ x: 8, opacity: 0 }}
-                className="hover:underline underline-offset-2 text-orange-600"
-                href={AGENTS_DOCS_HREF}
-                target="_blank"
-              >
-                View Docs ↗
-              </motion.a>
-              <motion.a
-                transition={{
-                  type: "spring",
-                  stiffness: 800,
-                  damping: 80,
-                  mass: 4
-                }}
-                animate={{ x: 0, opacity: 1 }}
-                initial={{ x: 8, opacity: 0 }}
-                className="bg-orange-400 text-white h-8 px-3 flex items-center rounded-full ring ring-orange-400 ring-offset-2"
-                href={DASHBOARD_HREF}
-                target="_blank"
-              >
-                Get Started
-              </motion.a>
-            </>
+            <motion.a
+              transition={{
+                type: "spring",
+                stiffness: 800,
+                damping: 80,
+                mass: 4
+              }}
+              animate={{ x: 0, opacity: 1 }}
+              initial={{ x: 8, opacity: 0 }}
+              className="bg-orange-400 text-white h-8 px-3 flex items-center rounded-full ring ring-orange-400 ring-offset-2"
+              href={AGENTS_DOCS_GET_STARTED_HREF}
+              target="_blank"
+            >
+              Get Started
+            </motion.a>
           )}
         </div>
       </nav>
@@ -123,19 +106,12 @@ export function Header() {
           <div className="bg-white p-1 border border-orange-400 rounded-full">
             <a
               className="bg-orange-400 text-white py-3 px-5 rounded-full hover:bg-orange-300 hover:text-inherit block"
-              href={DASHBOARD_HREF}
+              href={AGENTS_DOCS_GET_STARTED_HREF}
               target="_blank"
             >
               Get Started
             </a>
           </div>
-          <a
-            className="py-3 px-5 rounded-full border-orange-400 border bg-white hover:bg-orange-100 block"
-            href={AGENTS_DOCS_HREF}
-            target="_blank"
-          >
-            View Docs
-          </a>
         </div>
       </article>
     </>

@@ -4,9 +4,10 @@ export const withUtm = (link: string) => {
   return url.toString();
 };
 
-export const DASHBOARD_HREF = withUtm(
-  "https://dash.cloudflare.com/?to=/:account/workers-and-pages/create"
-);
 export const AGENTS_DOCS_HREF = withUtm(
   "https://developers.cloudflare.com/agents/"
+);
+
+export const AGENTS_DOCS_GET_STARTED_HREF = withUtm(
+  "https://developers.cloudflare.com/agents/#get-started"
 );
